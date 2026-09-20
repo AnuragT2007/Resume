@@ -1,8 +1,7 @@
 # Anurag Thakur | Web Developer & Visual Designer
 
 ## 📌 Overview
-This is a personal portfolio website showcasing the skills, experience, and projects of **Anurag Thakur**, a web developer and visual designer.  
-The site highlights expertise in front-end development, UI/UX, presentation design, and branding, while also serving as a central hub for résumé downloads and recruiter-friendly snapshots.
+This is a **my personal portfolio** website showcasing the skills, experience, and projects. 
 
 ---
 
@@ -17,21 +16,6 @@ The site highlights expertise in front-end development, UI/UX, presentation desi
   - 🚀 **Bold Impact** – Modern portfolio with striking visuals and social integration.  
 - **Downloads**: Résumé and one-page portfolio snapshot for recruiters.  
 - **Contact Section**: Direct communication options via email, phone, and form submission.
-
----
-
-## 🛠️ Tech Stack
-- **Frontend**: HTML5, CSS3, JavaScript, Responsive Design  
-- **Backend & Cloud**: Firebase (Firestore, Auth, Hosting)  
-- **Design Tools**: Canva, PowerPoint, Figma, GitHub  
-
----
-
-## 📂 Structure
-- `index.html` → Main portfolio page  
-- `assets/` → Images, icons, and design resources  
-- `css/` → Stylesheets for layout and responsiveness  
-- `js/` → Scripts for interactivity and Firebase integration  
 
 ---
 
