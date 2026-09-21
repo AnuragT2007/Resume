@@ -1,16 +1,8 @@
-/*
- * main.js — page behaviour for the portfolio (no framework, no build step).
- * The fluid background lives in fluid.js.
- */
 (function () {
   'use strict';
-
-  /* -------- settings you may want to change -------- */
-  // Contact-form messages are emailed straight to this address by FormSubmit.co
-  // (free, no account). The very first submission triggers a one-time confirmation
-  // email — see README.md. After confirming, you can swap CONTACT_EMAIL in the
-  // endpoint for the random string FormSubmit sends you, to keep your address
-  // out of the page source.
+/* ======================================================================
+   * Contact form end point
+   * ==================================================================== */
   var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
   var ROLES = ['Visual Designer', 'Web Developer', 'Presentation Designer', 'Graphic Designer'];
