@@ -1,9 +1,15 @@
+/*
+ * main.js — page behaviour for the portfolio (no framework, no build step).
+ * The fluid background lives in fluid.js.
+ */
 (function () {
   'use strict';
-  var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
+
+  /* -------- settings you may want to change -------- */
+  var FORM_ENDPOINT = 'https://readdy.ai/api/form/dan3g60p3fe23ggcgm10';
   var ROLES = ['Visual Designer', 'Web Developer', 'Presentation Designer', 'Graphic Designer'];
   var THEME_KEY = 'portfolio-theme';
+  var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
 
   /* -------- tiny helpers -------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -303,45 +309,33 @@
         return;
       }
 
-      function field(name) { return String(data.get(name) || '').trim(); }
-      var subject = field('subject');
-      var payload = {
-        name: (field('firstName') + ' ' + field('lastName')).trim(),
-        email: field('email'),          // FormSubmit uses this as the Reply-To
-        subject: subject,
-        message: field('message'),
-        _subject: 'Portfolio message: ' + subject,  // subject line of the email you receive
-        _template: 'table',
-        _captcha: 'false'
-      };
+      var body = new URLSearchParams();
+      data.forEach(function (value, key) { if (key !== 'website_alt') body.append(key, String(value)); });
 
       setLoading(true);
       hideStatus();
 
-      var SUCCESS = "Thanks! Your message has been sent — I'll be in touch soon.";
-      var FALLBACK = ' You can also email me directly at ' + CONTACT_EMAIL + '.';
-
       fetch(FORM_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
       })
         .then(function (res) {
           return res.text().then(function (raw) {
             var json = null;
-            try { json = JSON.parse(raw); } catch (err) { json = null; } // e.g. an HTML error page
-            var ok = json && (json.success === true || json.success === 'true');
-            if (ok) {
-              showStatus('success', SUCCESS);
+            try { json = JSON.parse(raw); } catch (err) { json = null; }
+            var info = (json && ((json.meta && json.meta.message) || json.message || (json.meta && json.meta.detail))) || raw || '';
+            var spam = typeof info === 'string' && info.toLowerCase().indexOf('spam') !== -1;
+            if (res.ok && json && json.code === 'OK' && !spam) {
+              showStatus('success', "Thanks! Your message has been sent — I'll be in touch soon.");
               form.reset(); updateCount();
             } else {
-              var why = json && typeof json.message === 'string' && json.message ? json.message : 'Something went wrong.';
-              showStatus('error', why + FALLBACK);
+              showStatus('error', typeof info === 'string' && info ? info : 'Something went wrong. Please try again.');
             }
           });
         })
         .catch(function () {
-          showStatus('error', 'Could not send right now. Please check your connection.' + FALLBACK);
+          showStatus('error', 'Could not send right now. Please check your connection or email me at ' + CONTACT_EMAIL + '.');
         })
         .then(function () { setLoading(false); });
     });
