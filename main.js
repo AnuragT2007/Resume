@@ -5,12 +5,17 @@
 (function () {
   'use strict';
 
-  /* -------- contact form -------- */
+  /* -------- settings you may want to change -------- */
+  // Contact-form messages are emailed straight to this address by FormSubmit.co
+  // (free, no account). The very first submission triggers a one-time confirmation
+  // email — see README.md. After confirming, you can swap CONTACT_EMAIL in the
+  // endpoint for the random string FormSubmit sends you, to keep your address
+  // out of the page source.
   var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
   var ROLES = ['Visual Designer', 'Web Developer', 'Presentation Designer', 'Graphic Designer'];
-  var THEME_KEY = 'portfolio-theme'
-  
+  var THEME_KEY = 'portfolio-theme';
+
   /* -------- tiny helpers -------- */
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
@@ -309,33 +314,45 @@
         return;
       }
 
-      var body = new URLSearchParams();
-      data.forEach(function (value, key) { if (key !== 'website_alt') body.append(key, String(value)); });
+      function field(name) { return String(data.get(name) || '').trim(); }
+      var subject = field('subject');
+      var payload = {
+        name: (field('firstName') + ' ' + field('lastName')).trim(),
+        email: field('email'),          // FormSubmit uses this as the Reply-To
+        subject: subject,
+        message: field('message'),
+        _subject: 'Portfolio message: ' + subject,  // subject line of the email you receive
+        _template: 'table',
+        _captcha: 'false'
+      };
 
       setLoading(true);
       hideStatus();
 
+      var SUCCESS = "Thanks! Your message has been sent — I'll be in touch soon.";
+      var FALLBACK = ' You can also email me directly at ' + CONTACT_EMAIL + '.';
+
       fetch(FORM_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString()
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
       })
         .then(function (res) {
           return res.text().then(function (raw) {
             var json = null;
-            try { json = JSON.parse(raw); } catch (err) { json = null; }
-            var info = (json && ((json.meta && json.meta.message) || json.message || (json.meta && json.meta.detail))) || raw || '';
-            var spam = typeof info === 'string' && info.toLowerCase().indexOf('spam') !== -1;
-            if (res.ok && json && json.code === 'OK' && !spam) {
-              showStatus('success', "Thanks! Your message has been sent — I'll be in touch soon.");
+            try { json = JSON.parse(raw); } catch (err) { json = null; } // e.g. an HTML error page
+            var ok = json && (json.success === true || json.success === 'true');
+            if (ok) {
+              showStatus('success', SUCCESS);
               form.reset(); updateCount();
             } else {
-              showStatus('error', typeof info === 'string' && info ? info : 'Something went wrong. Please try again.');
+              var why = json && typeof json.message === 'string' && json.message ? json.message : 'Something went wrong.';
+              showStatus('error', why + FALLBACK);
             }
           });
         })
         .catch(function () {
-          showStatus('error', 'Could not send right now. Please check your connection or email me at ' + CONTACT_EMAIL + '.');
+          showStatus('error', 'Could not send right now. Please check your connection.' + FALLBACK);
         })
         .then(function () { setLoading(false); });
     });
