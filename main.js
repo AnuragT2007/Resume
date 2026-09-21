@@ -6,7 +6,6 @@
   'use strict';
 
   /* -------- settings you may want to change -------- */
-  var FORM_ENDPOINT = 'https://formsubmit.co/el/muriji';
   var ROLES = ['Visual Designer', 'Web Developer', 'Presentation Designer', 'Graphic Designer'];
   var THEME_KEY = 'portfolio-theme';
   var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
