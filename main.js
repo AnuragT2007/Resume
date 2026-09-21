@@ -1,8 +1,5 @@
 (function () {
   'use strict';
-/* ======================================================================
-   * Contact form end point
-   * ==================================================================== */
   var CONTACT_EMAIL = 'thakur.07anurag@gmail.com';
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + CONTACT_EMAIL;
   var ROLES = ['Visual Designer', 'Web Developer', 'Presentation Designer', 'Graphic Designer'];
